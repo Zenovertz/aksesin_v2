@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#176b52">
+  <meta name="description" content="Temukan jalur akses sesuai kebutuhanmu dan bagikan kondisi terbaru bersama komunitas AKSESIN.">
+  <title>AKSESIN — Akses yang tepat, langkah lebih nyaman</title>
+  <link rel="stylesheet" href="aksesin.css">
+  <script src="aksesin-routing.js" defer></script>
+  <script src="aksesin-data.js" defer></script>
+  <script src="aksesin.js" defer></script>
+</head>
+<body>
+<a class="skipLink" href="#mainContent">Lewati ke konten utama</a>
+<svg class="iconLibrary" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3Z"/><path d="M9 3v15M15 6v15"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><path d="M6 15V6a3 3 0 0 1 3-3h2M18 9v9a3 3 0 0 1-3 3h-2"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4Z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l-2 2V11.5A8.5 8.5 0 0 1 10.5 3h2a8.5 8.5 0 0 1 8.5 8.5Z"/><path d="M7 9h9M7 14h6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6Z"/><path d="m8 12 3 3 5-6"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/></symbol>
+  <symbol id="i-wheelchair" viewBox="0 0 24 24"><circle cx="12" cy="4" r="2"/><path d="m11 8 1 6h5l3 6M12 10h5M8 10a6 6 0 1 0 6 9"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path d="m3 3 18 18"/></symbol>
+  <symbol id="i-ear" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 4-4 4-4 8a4 4 0 0 1-8 0M10 9a2 2 0 0 1 4 0c0 2-2 2-2 4"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v1"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m12 3 10 18H2Z"/><path d="M12 9v5M12 17v1"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  <symbol id="i-photo" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8" cy="9" r="1"/><path d="m3 17 5-5 4 4 4-6 5 7"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M20 3C8 2 2 8 5 15s16 8 15-12Z"/><path d="M3 21 15 9"/></symbol>
+</svg>
+
+<div class="appShell">
+  <aside class="sidebar">
+    <a class="logo" href="aksesin.html" aria-label="AKSESIN beranda"><span class="logoMark"><svg class="icon"><use href="#i-route"/></svg></span>aksesin<span class="logoDot">.</span></a>
+    <span class="sideCaption">AKSES UNTUK SEMUA</span>
+    <nav class="sideNav" aria-label="Menu utama">
+      <a class="navItem active" id="exploreLink" href="#explore"><svg class="icon"><use href="#i-map"/></svg>Jelajahi jalur</a>
+      <a class="navItem" id="savedLink" href="#explore"><svg class="icon"><use href="#i-save"/></svg>Jalur tersimpan<span class="navCount" id="savedCount">0</span></a>
+      <a class="navItem" id="forumLink" href="#community"><svg class="icon"><use href="#i-chat"/></svg>Forum komunitas</a>
+    </nav>
+    <div class="sidebarBottom">
+      <div class="communityNote"><span class="miniIcon"><svg class="icon"><use href="#i-leaf"/></svg></span><strong>Akses lebih baik,<br>dimulai dari kita.</strong><p>Satu kabar darimu membantu orang lain mengenali kondisi jalur.</p><a href="#community">Lihat kabar komunitas <span aria-hidden="true">↗</span></a></div>
+      <button class="exportButton" id="exportDataButton" type="button"><svg class="icon"><use href="#i-download"/></svg>Unduh data tersimpan</button>
+      <p class="versionNote">AKSESIN • Prototype komunitas</p>
+    </div>
+  </aside>
+
+  <div class="mainShell">
+    <header class="topbar"><div><span class="topbarEyebrow">SELAMAT DATANG DI AKSESIN</span><p>Ruang publik, untuk setiap orang.</p></div><div class="topbarRight"><span class="storageIndicator" id="storageIndicator" role="status"><span class="statusDot"></span>Tersimpan di perangkat</span><span class="userAvatar" aria-label="Pengguna lokal">A</span></div></header>
+
+    <main id="mainContent">
+      <section class="hero">
+        <div class="heroCopy"><span class="eyebrow"><span></span>KENALI AKSES SEBELUM BERAKTIVITAS</span><h1>Akses yang tepat.<br><em>Langkah lebih nyaman.</em></h1><p>Temukan jalur sesuai kebutuhanmu. Kenali kondisinya,<br class="desktopBreak"> lalu bagikan pengalaman untuk sesama.</p><div class="heroProof"><span class="proofIcon"><svg class="icon"><use href="#i-shield"/></svg></span><span>Berpusat pada kebutuhanmu.<br><strong>Diperbarui bersama komunitas.</strong></span></div></div>
+        <div class="heroVisual"><img src="assets/ramp.png" alt="Ilustrasi ramp landai dengan pegangan tangan dan jalur yang lapang" fetchpriority="high"><span class="imageDisclosure">Ilustrasi jalur</span><div class="heroFloat"><span class="floatIcon"><svg class="icon"><use href="#i-wheelchair"/></svg></span><div><strong>Lebih banyak akses.<br>Lebih banyak kesempatan.</strong><span>Ruang yang memberi jalan untuk semua.</span></div></div></div>
+      </section>
+
+      <section class="preferencesPanel" aria-labelledby="preferencesTitle">
+        <div class="sectionIntro"><div><span class="sectionNumber">01</span><h2 id="preferencesTitle">Apa kebutuhan aksesmu?</h2></div><span class="subtle">Kami carikan jalur yang sesuai.</span></div>
+        <form id="preferencesForm">
+          <fieldset class="needChoices"><legend class="srOnly">Pilih kebutuhan akses</legend>
+            <label class="needChoice"><input type="radio" name="need" value="wheelchair" checked><span class="needIcon"><svg class="icon"><use href="#i-wheelchair"/></svg></span><span><strong>Pengguna kursi roda</strong><small>Jalur landai &amp; bebas tangga</small></span><span class="radioMark"></span></label>
+            <label class="needChoice"><input type="radio" name="need" value="blind"><span class="needIcon"><svg class="icon"><use href="#i-eye"/></svg></span><span><strong>Tunanetra</strong><small>Jalur pemandu &amp; akses terbaca</small></span><span class="radioMark"></span></label>
+            <label class="needChoice"><input type="radio" name="need" value="deaf"><span class="needIcon"><svg class="icon"><use href="#i-ear"/></svg></span><span><strong>Tunarungu</strong><small>Penanda &amp; informasi visual</small></span><span class="radioMark"></span></label>
+          </fieldset>
+          <div class="preferenceFields">
+            <div class="field locationField"><label for="buildingSelect">Area yang ingin kamu kenali</label><div class="inputIcon"><svg class="icon"><use href="#i-pin"/></svg><select id="buildingSelect"><option value="campus">Kampus Inklusif Medan</option><option value="hospital">RS Harapan Sehat</option></select></div></div>
+            <div class="field floorField"><label for="floorSelect">Lantai</label><select id="floorSelect"><option value="1">Lantai 1</option><option value="2">Lantai 2</option></select></div>
+            <div class="field complaintField"><label for="complaintInput">Kendala atau kebutuhan tambahan <span>(opsional)</span></label><textarea id="complaintInput" maxlength="500" rows="1" placeholder="Contoh: sulit melewati jalur sempit atau licin" aria-describedby="complaintHelp"></textarea></div>
+            <button class="button primary findButton" id="recommendButton" type="submit">Temukan jalur<svg class="icon"><use href="#i-arrow"/></svg></button>
+          </div>
+          <div class="preferencesFoot"><p id="complaintHelp">Sebutkan kendala seperti tangga, sempit, licin, gelap, atau kebutuhan jalur pemandu.</p><div class="requirementTags" id="requirementTags" aria-live="polite"></div></div>
+        </form>
+      </section>
+
+      <section id="explore" class="exploreSection" aria-labelledby="exploreTitle">
+        <div class="sectionHeading"><div><span class="eyebrow mutedEyebrow">AKSES PILIHAN UNTUKMU</span><h2 id="exploreTitle">Jalur yang bisa kamu gunakan <span class="countPill" id="resultCount">0</span></h2><p id="recommendationSummary">Jalur berdasarkan kebutuhan dan kondisi terbaru.</p></div><div class="viewTabs" role="group" aria-label="Tampilan jalur"><button type="button" id="allPathsTab" class="active" aria-pressed="true">Rekomendasi</button><button type="button" id="savedPathsTab" aria-pressed="false"><svg class="icon"><use href="#i-save"/></svg>Tersimpan</button></div></div>
+        <div class="exploreGrid">
+          <div class="resultsColumn"><div id="pathCards" class="pathCards"></div><div id="conditionNotice" class="conditionNotice" hidden></div><p class="demoNote"><svg class="icon"><use href="#i-info"/></svg>Lokasi, ukuran, dan kondisi awal merupakan data contoh. Cek laporan terbaru sebelum menggunakan jalur.</p></div>
+          <div class="mapColumn">
+            <section class="mapPanel" aria-labelledby="mapTitle"><div class="mapHeading"><div><span class="eyebrow mutedEyebrow">SEBARAN JALUR AKSES</span><h3 id="mapTitle">Kampus Inklusif Medan</h3></div><span class="floorBadge" id="mapFloor">Lantai 1</span></div><div class="buildingMap" id="buildingMap" role="group" aria-label="Peta jalur akses"></div><div class="mapLegend"><span><i class="legendLine available"></i>Bisa digunakan</span><span><i class="legendLine caution"></i>Perlu perhatian</span><span><i class="legendLine blocked"></i>Tidak bisa digunakan</span></div><p class="mapCaption">Pilih nomor jalur untuk melihat gambar dan kondisinya. Peta menunjukkan segmen akses yang tersedia.</p></section>
+            <section id="pathDetail" class="pathDetail" aria-label="Detail jalur terpilih"></section>
+          </div>
+        </div>
+      </section>
+
+      <section class="communitySection" id="community" aria-labelledby="communityTitle">
+        <div class="sectionHeading"><div><span class="eyebrow mutedEyebrow">KABAR DARI SESAMA</span><h2 id="communityTitle">Satu pengalaman. Banyak manfaat.</h2><p>Beri rating, ceritakan kondisi jalur, dan bantu akses tetap terbuka.</p></div><button class="button primary" id="openReportButton" type="button"><svg class="icon"><use href="#i-plus"/></svg>Bagikan kondisi jalur</button></div>
+        <div class="communityLayout"><div class="forumMain"><div class="forumToolbar"><h3>Forum kondisi jalur <span id="reportCount" class="countPill">0</span></h3><label class="srOnly" for="forumPathFilter">Filter komentar berdasarkan jalur</label><select id="forumPathFilter"><option value="">Semua jalur di area ini</option></select></div><div id="forumFeed" class="forumFeed"></div></div><aside class="forumAside"><span class="miniIcon"><svg class="icon"><use href="#i-chat"/></svg></span><h3>Kabar terbaru,<br>keputusan lebih nyaman.</h3><ol><li>Pilih jalur yang kamu gunakan.</li><li>Berikan rating dan kondisi yang kamu temui.</li><li>Tambahkan komentar atau foto pendukung.</li></ol><div class="localNotice"><svg class="icon"><use href="#i-info"/></svg><p>Dalam prototype ini, laporan tersimpan di browser perangkatmu dan diperbarui antar-tab. Komentar bertanda “Contoh” adalah data demo.</p></div></aside></div>
+      </section>
+      <footer><a class="footerLogo" href="#mainContent">aksesin.</a><p>Karena akses yang baik adalah hak setiap orang.</p><span>Dibuat untuk saling memudahkan.</span><button type="button" id="exportFooterButton" class="button secondary mobileExport"><svg class="icon"><use href="#i-download"/></svg>Unduh data tersimpan</button></footer>
+    </main>
+  </div>
+</div>
+
+<dialog id="reportDialog" class="reportDialog" aria-labelledby="reportTitle">
+  <div class="dialogHeading"><div><span class="eyebrow mutedEyebrow">SUARAMU MEMBANTU SESAMA</span><h2 id="reportTitle">Bagikan kondisi jalur</h2></div><button class="iconButton" id="closeReportButton" type="button" aria-label="Tutup formulir"><svg class="icon"><use href="#i-close"/></svg></button></div>
+  <p class="dialogIntro">Ceritakan yang kamu temui. Kondisi dan rating jalur akan diperbarui setelah laporan ditambahkan.</p>
+  <form id="reportForm">
+    <div class="reportFields"><div class="field"><label for="reportPath">Jalur yang ingin dilaporkan</label><select id="reportPath" required></select></div><div class="field"><label for="reportAuthor">Nama panggilan <span>(opsional)</span></label><input id="reportAuthor" maxlength="50" placeholder="Contoh: Rani"></div></div>
+    <fieldset class="ratingField"><legend>Seberapa nyaman jalur ini? <span aria-hidden="true">*</span></legend><div class="ratingChoices">
+      <label><input type="radio" name="rating" value="1" required><span>★</span><span class="srOnly">1 dari 5, sangat kurang nyaman</span></label>
+      <label><input type="radio" name="rating" value="2"><span>★</span><span class="srOnly">2 dari 5</span></label>
+      <label><input type="radio" name="rating" value="3"><span>★</span><span class="srOnly">3 dari 5</span></label>
+      <label><input type="radio" name="rating" value="4"><span>★</span><span class="srOnly">4 dari 5</span></label>
+      <label><input type="radio" name="rating" value="5"><span>★</span><span class="srOnly">5 dari 5, sangat nyaman</span></label>
+    </div><span id="ratingDescription">Pilih rating 1–5</span></fieldset>
+    <fieldset class="conditionField"><legend>Kondisi yang kamu temui</legend><div class="conditionChoices"><label><input type="radio" name="condition" value="available" checked><span class="statusDot available"></span>Bisa digunakan</label><label><input type="radio" name="condition" value="caution"><span class="statusDot caution"></span>Perlu perhatian</label><label><input type="radio" name="condition" value="blocked"><span class="statusDot blocked"></span>Tidak bisa digunakan</label></div></fieldset>
+    <div class="field"><label for="reportComment">Pengalaman atau masalah yang kamu temui <span aria-hidden="true">*</span></label><textarea id="reportComment" minlength="10" maxlength="1000" rows="3" required placeholder="Contoh: ramp bisa digunakan, tetapi sisi kiri licin setelah hujan."></textarea><span class="fieldHelp">Minimal 10 karakter. Sertakan bagian jalur dan kondisi yang perlu diketahui.</span></div>
+    <div class="photoUpload"><label for="reportPhoto"><svg class="icon"><use href="#i-photo"/></svg><span><strong>Tambahkan foto kondisi</strong><small>Opsional · JPG, PNG, atau WebP · maks. 5 MB</small></span></label><input id="reportPhoto" type="file" accept="image/jpeg,image/png,image/webp"><div class="photoPreview" id="photoPreview" hidden><img id="reportPhotoPreview" alt="Pratinjau foto laporan"><button id="removePhotoButton" class="iconButton" type="button" aria-label="Hapus foto"><svg class="icon"><use href="#i-close"/></svg></button></div></div>
+    <p id="reportError" class="formError" role="alert" hidden></p>
+    <div class="dialogActions"><span id="draftStatus"><svg class="icon"><use href="#i-check"/></svg>Draf disimpan otomatis di perangkat ini</span><button class="button primary" id="submitReportButton" type="submit">Bagikan kondisi<svg class="icon"><use href="#i-arrow"/></svg></button></div>
+  </form>
+</dialog>
+<div id="toast" class="toast" role="status"></div>
+</body>
+</html>
