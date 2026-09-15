@@ -1,0 +1,14 @@
+{
+  "name": "aksesin-medan",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Asisten fasilitas kursi roda di dalam mal Medan dengan posisi yang dikonfirmasi pengguna.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server/index.cjs",
+    "test": "node --test tests/unit/*.test.js tests/server/*.test.cjs",
+    "test:browser": "node tests/browser/smoke.cjs"
+  }
+}

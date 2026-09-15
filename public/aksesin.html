@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#176b52">
+<meta name="description" content="Asisten akses kursi roda di dalam DeliPark dan Sun Plaza Medan. Tentukan posisi, cari fasilitas, dan lihat direktori resmi mall.">
+<title>AKSESIN — Teman akses di dalam mall</title>
+<link rel="stylesheet" href="css/aksesin.css">
+<script src="data/malls.js" defer></script>
+<script src="data/floors.js" defer></script>
+<script src="js/utils.js" defer></script>
+<script src="js/indoor.js" defer></script>
+<script src="js/aksesin.js" defer></script>
+</head><body>
+<a class="skipLink" href="#chatInput">Lewati ke chat asisten</a>
+<svg class="iconLibrary" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="i-wheelchair" viewBox="0 0 24 24"><circle cx="12" cy="4" r="2"/><path d="m11 8 1 6h5l3 6M12 10h5M8 10a6 6 0 1 0 6 9"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><path d="M6 15V6a3 3 0 0 1 3-3h2M18 9v9a3 3 0 0 1-3 3h-2"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m3 3 18 9-18 9 4-9-4-9ZM7 12h14"/></symbol>
+  <symbol id="i-location" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l-2 2V11.5A8.5 8.5 0 0 1 10.5 3h2a8.5 8.5 0 0 1 8.5 8.5Z"/><path d="M7 9h9M7 14h6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v1"/></symbol>
+  <symbol id="i-lift" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 3v18m-5-8 2-3 2 3m2-2 2 3 2-3"/></symbol>
+  <symbol id="i-toilet" viewBox="0 0 24 24"><path d="M4 3h5v9H4zM4 12h16a7 7 0 0 1-7 7H9a5 5 0 0 1-5-5v-2Zm6 7-1 3h8l-1-4"/></symbol>
+  <symbol id="i-door" viewBox="0 0 24 24"><path d="M4 21V3h16v18M2 21h20M8 21V7h8v14M13 13v2"/></symbol>
+  <symbol id="i-parking" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="m5 3 4 1 1 5-3 2a13 13 0 0 0 6 6l2-3 5 1 1 4c-1 5-9 2-14-3S0 4 5 3Z"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 3h7v7M21 3 10 14M10 3H3v18h18v-7"/></symbol>
+</svg>
+<header class="siteHeader"><div class="headerInner">
+<a class="brand" href="aksesin.html" aria-label="AKSESIN beranda"><span class="brandMark"><svg class="icon" aria-hidden="true"><use href="#i-route"/></svg></span>aksesin<span>.</span></a>
+<nav class="mainNav" aria-label="Menu utama"><a href="#planner">Di dalam mall</a><a href="#malls">Info fasilitas</a></nav>
+<span class="profilePill"><svg class="icon" aria-hidden="true"><use href="#i-wheelchair"/></svg>Untuk pengguna kursi roda</span>
+</div></header>
+<main id="mainContent">
+<section class="pageIntro" aria-labelledby="pageTitle">
+<div class="introCopy"><span class="eyebrow">TEMAN AKSESMU DI DALAM MALL</span><h1 id="pageTitle">Di dalam mall,<br><em>lebih leluasa.</em></h1><p class="introText">Lagi di mana, mau ke fasilitas apa?<br>Tentukan posisimu, cek fasilitas, dan lihat direktori resmi mall.</p><div class="introChips"><span><svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>Tinggal cerita di chat</span><span><svg class="icon" aria-hidden="true"><use href="#i-lift"/></svg>Toilet, lift &amp; akses</span><span><svg class="icon" aria-hidden="true"><use href="#i-wheelchair"/></svg>Fokus kursi roda</span></div></div>
+<div class="introAside"><span class="eyebrow">MULAI DARI TEMPATMU BERADA</span><strong>02<span>mall di Medan</span></strong><p>DeliPark &amp; Sun Plaza</p><span class="introAsideNote">Informasi dalam gedung, dari sumber mall.</span></div>
+</section>
+<section id="planner" class="plannerGrid" aria-label="Asisten dan direktori di dalam mall">
+<div class="chatPanel">
+<div class="panelHeading"><span class="assistantAvatar"><svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg></span><div><h2>Asisten Aksesin</h2><p>Mulai dari posisi kamu</p></div><span id="assistantMode" class="modeBadge">Asisten lokal</span></div>
+<div id="chatLog" class="chatLog" role="log" aria-label="Percakapan dengan asisten" aria-live="polite" aria-relevant="additions"></div>
+<div class="quickPrompts" aria-label="Contoh pertanyaan"><button type="button" data-prompt="Aku di GF Delipark, mau ke toilet difabel">GF DeliPark → toilet</button><button type="button" data-prompt="Lift di Sun Plaza">Lift di Sun Plaza</button><button type="button" data-prompt="Peminjaman kursi roda">Pinjam kursi roda</button></div>
+<form id="chatForm" class="composer"><label class="srOnly" for="chatInput">Tulis posisi di dalam mall dan fasilitas tujuan</label><textarea id="chatInput" rows="2" maxlength="600" required placeholder="Aku di GF, dekat concierge, mau ke toilet…" aria-describedby="chatInputHelp"></textarea><button id="sendChat" type="submit" aria-label="Kirim pesan"><svg class="icon" aria-hidden="true"><use href="#i-send"/></svg></button></form>
+<p id="chatInputHelp" class="chatFootnote">Enter untuk kirim · Shift + Enter untuk baris baru</p><p id="chatServiceNote" class="chatFootnote">Chat dasar aktif. Jawaban fasilitas mengikuti sumber resmi.</p><button id="clearChatButton" class="textButton" type="button">Mulai percakapan baru</button>
+</div>
+<div class="mapPanel indoorPanel">
+<div class="panelHeading"><div><span class="eyebrow">DI DALAM MALL</span><h2 id="selectedMallName">DeliPark Mall</h2><p>Pilih mall tempat kamu berada.</p></div><span class="modeBadge">Posisi dikonfirmasi pengguna</span></div>
+<div class="mallTabs" role="group" aria-label="Pilih mall"><button type="button" data-select-mall="delipark" aria-pressed="true">DeliPark</button><button type="button" data-select-mall="sun-plaza" aria-pressed="false">Sun Plaza</button></div>
+<div class="indoorPosition"><div class="positionHeading"><h3>Tentukan posisi awalmu</h3><span class="statusPill unknown">Belum ada pelacakan indoor</span></div><p class="positionHint">Lihat nama lantai dan toko atau penanda terdekat. Posisi ini kamu tentukan sendiri.</p>
+<form id="positionForm" class="positionForm"><div class="field"><label for="floorSelect">Lantai saat ini</label><select id="floorSelect"><option value="">Belum tahu lantainya</option></select></div><div class="field"><label for="originInput">Dekat toko atau penanda apa?</label><input id="originInput" type="text" maxlength="120" placeholder="Contoh: dekat concierge" autocomplete="off"></div><button id="savePositionButton" class="button primary" type="submit">Pakai posisi ini <svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></button></form><p id="positionStatus" class="positionStatus" role="status">Posisi dalam gedung belum ditentukan.</p>
+<details class="gpsDetails"><summary>Gunakan perkiraan lokasi perangkat</summary><p>GPS hanya membantu memperkirakan area mall. GPS tidak menentukan lantai, toko, atau koridor tempatmu berada.</p><button id="locationButton" class="button secondary" type="button"><svg class="icon" aria-hidden="true"><use href="#i-location"/></svg>Cek area mall dari lokasi</button><p id="locationStatus" class="locationStatus" role="status">Lokasi perangkat belum digunakan.</p><div id="gpsSuggestion"></div><button id="clearLocationButton" class="textButton" type="button" hidden>Hapus lokasi perangkat</button></details></div>
+<section id="indoorDirectory" class="indoorDirectory" aria-labelledby="directoryTitle"><div class="directoryHeading"><div><span class="eyebrow">KENALI TEMPATNYA</span><h3 id="directoryTitle">Direktori resmi DeliPark</h3></div><a id="directoryLink" href="https://delipark.com/MapDir" target="_blank" rel="noopener noreferrer">Buka direktori resmi ↗</a></div><p class="directoryHint">Lantai yang dilihat pada direktori tidak mengubah posisi awalmu.</p><div id="floorTabs" class="floorTabs" role="group" aria-label="Lihat lantai pada direktori"></div><div id="floorPlanArea" class="floorPlanArea"></div></section>
+<div id="facilityShortcuts" class="facilityShortcuts" role="group" aria-label="Pilih fasilitas tujuan"><button type="button" data-facility="toilet"><svg class="icon" aria-hidden="true"><use href="#i-toilet"/></svg>Toilet difabel</button><button type="button" data-facility="lift"><svg class="icon" aria-hidden="true"><use href="#i-lift"/></svg>Lift</button><button type="button" data-facility="wheelchair"><svg class="icon" aria-hidden="true"><use href="#i-wheelchair"/></svg>Pinjam kursi roda</button><button type="button" data-facility="parking"><svg class="icon" aria-hidden="true"><use href="#i-parking"/></svg>Parkir difabel</button></div>
+<section id="journeyPanel" class="journeyPanel" aria-labelledby="journeyTitle" hidden><span class="eyebrow">TUJUAN DI DALAM MALL</span><h3 id="journeyTitle"></h3><div class="journeySummary"><div><span>Posisi yang kamu sebutkan</span><strong id="journeyOrigin"></strong></div><div><span>Lokasi yang dicantumkan mall</span><strong id="journeyDestination"></strong></div></div><p id="journeyNote"></p><ul id="journeySteps" class="indoorChecklist"></ul><div class="journeyActions"><a id="journeySource" href="https://delipark.com/Facilities" target="_blank" rel="noopener noreferrer">Sumber fasilitas ↗</a><button id="requestHelpButton" class="button primary" type="button">Tampilkan bantuan ke petugas <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg></button></div></section>
+<div class="indoorDataNote"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><p>Petunjuk belok dan rute terpendek belum tersedia. Posisi pintu fasilitas serta jalur tanpa tangga perlu dipetakan dan diverifikasi terlebih dahulu.</p></div>
+</div></section>
+<section id="malls" aria-labelledby="mallsTitle"><div class="sectionHeading"><div><span class="eyebrow">FASILITAS YANG BISA KAMU CEK</span><h2 id="mallsTitle">Kenali akses di dalam mall.</h2><p>Informasi pengelola, dengan lokasi dan batas data yang jelas.</p></div><span class="sourceDate">Sumber fasilitas diperiksa 12 Sep 2026</span></div><div id="mallCards" class="mallGrid"></div></section>
+<section class="dataNotes" aria-labelledby="dataTitle"><h2 id="dataTitle">Posisi yang jelas, bantuan yang tepat.</h2><div class="infoGrid"><div><span>01</span><h3>Tentukan titik awal</h3><p>Pilih lantai dan sebutkan toko atau penanda terdekat. Beri tahu asisten jika kamu berpindah tempat.</p></div><div><span>02</span><h3>Cek fasilitas tujuan</h3><p>Lihat lokasi yang dipublikasikan mall. Tunjukkan kartu bantuan kepada petugas untuk akses tanpa tangga dan kondisi fasilitas saat ini.</p></div><div><span>03</span><h3>GPS punya batas di dalam gedung</h3><p>Titik yang bergerak akurat di koridor memerlukan sistem lokasi indoor dan denah terkalibrasi. Versi ini belum terhubung ke sistem tersebut.</p></div></div></section>
+<noscript><p class="mapFallback">Aktifkan JavaScript untuk chat dan pilihan fasilitas. Kunjungi <a href="https://delipark.com/MapDir">direktori DeliPark</a> atau <a href="https://www.lippomalls.com/mall/Sun-Plaza/facilities">fasilitas Sun Plaza</a>.</p></noscript>
+</main><footer class="siteFooter"><a class="brand" href="#mainContent">aksesin<span>.</span></a><p>Lebih banyak ruang untuk bergerak.</p><span>Di dalam mall · Kursi roda · Medan</span></footer>
+<dialog id="helpDialog" class="helpDialog" aria-labelledby="helpTitle"><span class="eyebrow">TUNJUKKAN KEPADA PETUGAS MALL</span><h2 id="helpTitle">Boleh bantu tunjukkan aksesnya?</h2><p id="helpMessage"></p><p class="dialogNote">Kartu ini hanya ditampilkan di layar. Tidak mengirim pesan atau memanggil petugas secara otomatis.</p><button id="closeHelpDialog" class="button primary" type="button">Tutup kartu bantuan</button></dialog>
+</body></html>
