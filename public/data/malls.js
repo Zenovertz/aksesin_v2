@@ -17,13 +17,20 @@
         { id: "toilet", label: "Toilet difabel", status: "published", location: "Setiap lantai",
           detail: "Pengelola mencantumkan toilet difabel di setiap lantai. Titik toilet dan kondisi hari ini belum diverifikasi.", sourceUrl: DELIPARK_FACILITIES },
         { id: "lift", label: "Lift", status: "unknown", location: null,
-          detail: "Lokasi dan spesifikasi lift untuk kursi roda belum terkonfirmasi dari teks sumber yang diperiksa. Tanyakan kepada concierge.", sourceUrl: DELIPARK_FACILITIES },
+          detail: "Lokasi dan spesifikasi lift untuk kursi roda belum terkonfirmasi dari teks sumber yang diperiksa.", sourceUrl: DELIPARK_FACILITIES },
         { id: "entrance", label: "Akses masuk kursi roda", status: "unknown", location: null,
-          detail: "Pintu masuk tanpa anak tangga, lebar akses, dan kemiringan ramp belum terkonfirmasi dari sumber yang diperiksa. Hubungi concierge.", sourceUrl: DELIPARK_FACILITIES },
+          detail: "Pintu masuk tanpa anak tangga, lebar akses, dan kemiringan ramp belum terkonfirmasi dari sumber yang diperiksa.", sourceUrl: DELIPARK_FACILITIES },
         { id: "parking", label: "Parkir difabel", status: "unknown", location: null,
           detail: "Lokasi petak parkir difabel dan jalur menuju pintu masuk belum terkonfirmasi dari sumber yang diperiksa.", sourceUrl: DELIPARK_FACILITIES },
         { id: "wheelchair", label: "Peminjaman kursi roda", status: "published", location: "Concierge, GF",
-          detail: "Kursi roda tersedia melalui concierge lantai GF. Hubungi pengelola untuk memastikan stok dan ketentuan peminjaman.", sourceUrl: DELIPARK_FACILITIES }
+          detail: "Kursi roda tersedia melalui concierge lantai GF. Stok dan ketentuan peminjaman tidak tersedia secara langsung di aplikasi.", sourceUrl: DELIPARK_FACILITIES,
+          photo: {
+            url: "https://delipark.com/cms/upload/images/668f5c6e68817/20260213_698efd59bc84d.JPG",
+            alt: "Dua kursi roda dan petugas di depan meja concierge DeliPark",
+            caption: "Meja concierge dan kursi roda pada galeri resmi DeliPark. Layanan tercantum di GF.",
+            sourceUrl: "https://delipark.com/DetilFacilities/getinfo/Wheel_Chair",
+            kind: "location", checkedAt: "2026-09-17"
+          } }
       ]
     },
     {
@@ -41,13 +48,20 @@
         { id: "toilet", label: "Toilet difabel", status: "published", location: "All Toilet",
           detail: "Daftar resmi mencantumkan toilet difabel. Titik pintu, ukuran ruang, dan kondisi hari ini belum diverifikasi.", sourceUrl: SUN_FACILITIES },
         { id: "lift", label: "Lift", status: "published", location: "All Areas",
-          detail: "Pengelola mencantumkan elevator. Lokasi pintu lift yang paling dekat dan kondisi operasinya perlu ditanyakan kepada petugas.", sourceUrl: SUN_FACILITIES },
+          detail: "Pengelola mencantumkan elevator. Titik pintu lift dan status operasinya belum tersedia dalam data aplikasi.", sourceUrl: SUN_FACILITIES },
         { id: "entrance", label: "Akses masuk kursi roda", status: "published", location: "All Car Parks",
           detail: "Pengelola mencantumkan akses difabel di area parkir. Pintu masuk yang tepat, lebar lintasan, dan kemiringan ramp belum disurvei.", sourceUrl: SUN_FACILITIES },
         { id: "parking", label: "Parkir difabel", status: "published", location: "UG & L1",
           detail: "Tautan fasilitas resmi mencantumkan parkir difabel di UG dan L1. Ketersediaan petak saat kedatangan belum diketahui.", sourceUrl: SUN_FACILITIES },
         { id: "wheelchair", label: "Peminjaman kursi roda", status: "published", location: "GF (Zone C) Floor",
-          detail: "Fasilitas kursi roda tercantum di GF, Zone C. Tanyakan stok dan ketentuan peminjaman kepada customer service.", sourceUrl: SUN_FACILITIES }
+          detail: "Fasilitas kursi roda tercantum di GF, Zone C. Stok dan ketentuan peminjaman tidak tersedia secara langsung di aplikasi.", sourceUrl: SUN_FACILITIES,
+          photo: {
+            url: "https://websitecms.lippomalls.com/api/images/facility-instances/Wheelchair%20Update_1785139159.webp",
+            alt: "Dua kursi roda di samping penanda peminjaman pada gambar fasilitas resmi Sun Plaza",
+            caption: "Foto layanan dari halaman resmi Sun Plaza; tampilan loket GF Zone C belum terkonfirmasi.",
+            sourceUrl: SUN_FACILITIES,
+            kind: "service", checkedAt: "2026-09-17"
+          } }
       ]
     }
   ];

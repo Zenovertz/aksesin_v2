@@ -3,6 +3,7 @@
   const D = globalThis.AksesinMalls;
   const I = globalThis.AksesinIndoor;
   const U = globalThis.AksesinUtils;
+  const photos = globalThis.AksesinFacilityPhoto;
   const $ = id => document.getElementById(id);
   const icon = name => `<svg class="icon" aria-hidden="true"><use href="#i-${name}"/></svg>`;
   const escape = text => String(text ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -15,6 +16,8 @@
   let chatVersion = 0, chatController = null, chatBusy = false;
   let locationVersion = 0, locationTimer = null, locationPending = false;
   let deviceLocation = null;
+  const areaMap = globalThis.AksesinCesiumMap.create({ onLocate: locate });
+  const indoorNav = globalThis.AksesinNavigator.create({ container: $('indoorNavigator'), onMessage: text => addMessage(text) });
 
   function link(label, href) {
     const a = document.createElement('a'); a.textContent = label; a.href = href;
@@ -34,9 +37,10 @@
     $('chatLog').append(article);
     while ($('chatLog').children.length > 50) $('chatLog').firstElementChild.remove();
     $('chatLog').scrollTop = $('chatLog').scrollHeight;
+    return article;
   }
   function greeting() {
-    addMessage('Halo! Aku bantu mencari fasilitas di dalam DeliPark dan Sun Plaza untuk pengguna kursi roda.\n\nPilih mall tempatmu berada, lalu ceritakan lantai, toko atau penanda terdekat, dan tujuanmu. Contoh: “Aku di GF Delipark, mau ke toilet difabel”.\n\nPosisimu berasal dari informasi yang kamu isi. Aku belum bisa melacak gerakan atau memberi petunjuk belok di koridor.');
+    addMessage('Mau dari mana ke mana? Coba “dari pintu masuk ke toilet difabel” atau “dari concierge ke kafe L1”.\n\nAku akan menghitung rute rekomendasi, terpendek, dan tercepat, lalu menampilkan garis jalur dan panduan belok.\n\nNavigasi saat ini memakai denah latihan buatan yang jelas berlabel demo. Info dan foto mall asli tersedia pada bagian Info fasilitas.');
   }
   function cancelChat() {
     chatVersion++; chatController?.abort(); chatController = null; chatBusy = false;
@@ -50,7 +54,7 @@
   }
   function resetJourney() {
     $('journeyPanel').hidden = true; $('journeySteps').replaceChildren();
-    if ($('helpDialog').open) $('helpDialog').close();
+    $('journeyPhoto').replaceChildren();
   }
   function currentMall() { return D.getMall(context.mallId); }
   function floorLabel(id = context.floorId) { return I.getFloor(context.mallId, id)?.label || ''; }
@@ -77,7 +81,8 @@
     document.querySelectorAll('[data-select-mall]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.selectMall === id)));
     $('floorSelect').replaceChildren(new Option('Belum tahu lantainya', ''), ...I.getFloors(id).map(floor => new Option(floor.label, floor.id)));
     renderPosition(); renderDirectory();
-    if (announce) addMessage(`${mall.name} dipilih. Kamu di lantai berapa dan dekat toko atau penanda apa?`, 'assistant', [button('Isi posisi awal', () => $('floorSelect').focus())]);
+    areaMap.setMall(mall); indoorNav.setMall(mall);
+    if (announce) addMessage(`${mall.name} dipilih untuk informasi fasilitas. Navigasi yang bisa dicoba menggunakan denah latihan terpisah. Pilih titik awal dan tujuan pada denah.`, 'assistant', [button('Pilih titik awal', () => $('navStart').focus())]);
   }
   function renderDirectory() {
     const mall = currentMall();
@@ -135,25 +140,15 @@
     $('journeyPanel').hidden = false; $('journeyTitle').textContent = `${item.label} · ${mall.shortName}`;
     $('journeyOrigin').textContent = positionLabel(); $('journeyDestination').textContent = place;
     $('journeyNote').textContent = item.detail;
-    const notes = [];
-    if (!positionAt) notes.push('Isi lantai atau penanda terdekat agar petugas mengetahui titik awalmu.');
-    if (id === 'toilet' && mall.id === 'delipark' && context.floorId) {
-      notes.push(`Sumber menyebut toilet difabel di setiap lantai. Konfirmasikan pintu toilet pada ${floorLabel()} kepada petugas; titiknya belum tersedia di aplikasi.`);
-    } else if (id === 'wheelchair') {
-      notes.push(`Lokasi layanan yang tercantum: ${place}. Konfirmasikan ketersediaan kursi roda kepada petugas.`);
-    } else notes.push('Minta petugas memastikan lokasi fasilitas dan apakah aksesnya sedang dapat digunakan.');
-    notes.push('Jika perlu berpindah lantai, minta akses melalui lift. Jalur tanpa tangga dari titik awalmu belum diverifikasi.');
-    notes.push('Belum ada petunjuk kiri/kanan, jarak koridor, atau pilihan rute terpendek untuk tujuan ini.');
-    $('journeySteps').replaceChildren(...notes.map(text => { const li = document.createElement('li'); li.textContent = text; return li; }));
+    if (id === 'wheelchair') $('journeyPhoto').append(photos.create(item, mall));
+    $('journeySteps').replaceChildren();
     $('journeySource').href = item.sourceUrl;
-    if (withMessage) addMessage(`${item.label} — ${mall.name}\nLokasi tercantum: ${place}.\n\n${item.detail}\n\n${positionAt ? `Posisi yang kamu sebutkan: ${positionLabel()}.\n` : 'Kamu berada di lantai berapa atau dekat penanda apa?\n'}Titik pintu dan jalur koridor belum terverifikasi, jadi aku belum dapat memberi arahan belok. Kamu bisa menunjukkan kartu bantuan kepada petugas.`, 'assistant', [link('Sumber resmi ↗', item.sourceUrl), button('Tampilkan kartu bantuan', openHelp)]);
-  }
-  function openHelp() {
-    expirePosition();
-    const mall = currentMall(); const item = mall.facilities.find(f => f.id === context.facility);
-    if (!item) return;
-    $('helpMessage').textContent = `Saya menggunakan kursi roda dan ingin menuju ${item.label.toLowerCase()} di ${mall.name}.\n\n${positionAt ? `Posisi yang saya sebutkan: ${positionLabel()}.` : 'Mohon bantu memastikan posisi awal saya.'}\n\nBoleh tunjukkan pintu fasilitas dan jalur yang dapat dilewati kursi roda tanpa tangga? Jika perlu berpindah lantai, mohon tunjukkan lift yang beroperasi.`;
-    if (!$('helpDialog').open) $('helpDialog').showModal();
+    $('mallReference').open = true;
+    if (withMessage) {
+      const message = addMessage(`Info resmi ${mall.name}: ${item.label}\nLokasi tercantum: ${place}.\n\n${item.detail}\n\nFoto dan lokasi ini adalah referensi mall asli; rute pada denah latihan terpisah.`, 'assistant', [link('Sumber resmi ↗', item.sourceUrl), button('Coba tujuan di demo', () => indoorNav.chooseFacility(id))]);
+      if (id === 'wheelchair') message.append(photos.create(item, mall));
+      $('chatLog').scrollTop = $('chatLog').scrollHeight;
+    }
   }
   function validIntent(value) {
     return value && ['indoor', 'position', 'help', 'unknown'].includes(value.intent)
@@ -164,7 +159,7 @@
   }
   function applyIntent(intent) {
     if (!validIntent(intent) || intent.intent === 'unknown') {
-      addMessage('Aku belum mengenali permintaan itu. Fokusnya fasilitas di dalam DeliPark atau Sun Plaza. Coba “aku di GF Delipark mau ke toilet difabel”, atau tentukan posisi dan pilih fasilitas pada panel.'); return;
+      addMessage('Aku belum mengenali permintaan itu. Coba “dari pintu masuk ke toilet difabel” atau pilih titik awal dan tujuan pada denah latihan. Info fasilitas mall asli tersedia di bawahnya.'); return;
     }
     if (intent.intent === 'help') { greeting(); return; }
     if (intent.mallId && intent.mallId !== context.mallId) selectMall(intent.mallId, false);
@@ -176,7 +171,11 @@
       positionAt = context.floorId || context.originLabel ? Date.now() : null;
       resetJourney(); renderPosition();
     }
-    if (intent.facility) showFacility(intent.facility);
+    if (intent.facility) {
+      const label = currentMall().facilities.find(item => item.id === intent.facility)?.label;
+      if (intent.originLabel && label) indoorNav.handleMessage(`dari ${intent.originLabel} ke ${label}`);
+      else indoorNav.chooseFacility(intent.facility);
+    }
     else if (intent.intent === 'position') {
       resetJourney();
       addMessage(positionAt ? `Posisi yang kamu sebutkan: ${positionLabel()}, ${currentMall().name}. Kamu ingin mencari fasilitas apa?` : `${currentMall().name} dipilih. Kamu di lantai berapa, dan dekat toko atau penanda apa?`, 'assistant', facilityActions());
@@ -186,6 +185,10 @@
     text = text.trim(); if (!text || text.length > 600 || chatBusy) return;
     cancelPendingLocation(); expirePosition(); addMessage(text, 'user'); $('chatInput').value = '';
     const localIntent = I.parseMessage(text, context); let intent = localIntent;
+    if (localIntent.mallId && localIntent.mallId !== context.mallId) selectMall(localIntent.mallId, false);
+    // The navigation component resolves only named points in its own plan.
+    // Browser GPS and the real mall reference form never become indoor coordinates.
+    if (indoorNav.handleMessage(text)) return;
     const version = ++chatVersion;
     if (aiEnabled && localIntent.intent === 'unknown') {
       chatBusy = true; $('sendChat').disabled = true; $('chatLog').setAttribute('aria-busy', 'true');
@@ -209,11 +212,12 @@
   }
   function clearLocation() {
     locationVersion++; clearTimeout(locationTimer); locationPending = false; deviceLocation = null;
+    areaMap.clearLocation();
     $('locationButton').disabled = false; $('clearLocationButton').hidden = true;
     $('locationStatus').textContent = 'Lokasi perangkat belum digunakan.'; $('gpsSuggestion').replaceChildren();
   }
   function locate() {
-    cancelChat(); clearLocation();
+    cancelChat(); clearLocation(); $('mallReference').open = true; $('gpsDetails').open = true;
     if (!navigator.geolocation || !globalThis.isSecureContext) { $('locationStatus').textContent = 'Lokasi perangkat memerlukan HTTPS atau localhost. Kamu tetap bisa memilih mall dan posisi awal secara manual.'; return; }
     const version = ++locationVersion; locationPending = true;
     $('locationButton').disabled = true; $('clearLocationButton').hidden = false;
@@ -230,6 +234,7 @@
       if (!U.inMedan(point)) { fail('Lokasi perangkat tidak menunjukkan area Medan. Kamu tetap bisa memilih mall secara manual.'); return; }
       if (!Number.isFinite(point.accuracy) || point.accuracy <= 0 || point.accuracy > 150) { fail('Perkiraan lokasi terlalu luas untuk membantu memilih mall. Pilih mall secara manual; posisi dalam gedung tidak diubah.'); return; }
       clearTimeout(locationTimer); locationPending = false; $('locationButton').disabled = false; deviceLocation = point;
+      areaMap.setLocation(point);
       const closest = D.MALLS.map(mall => ({ mall, distance: U.distanceMeters(point, mall) })).sort((a, b) => a.distance - b.distance)[0];
       $('locationStatus').textContent = `Perkiraan akurasi ±${Math.ceil(point.accuracy)} m. Lantai dan posisi dalam gedung tidak diketahui. Lokasi diambil sekali.`;
       const p = document.createElement('p');
@@ -239,7 +244,11 @@
     }, error => fail(({ 1: 'Izin lokasi ditolak. Pilih mall dan isi posisi di dalam gedung secara manual.', 2: 'Lokasi perangkat belum ditemukan. Pilih mall secara manual.', 3: 'Pencarian lokasi melewati batas waktu. Coba lagi atau pilih mall secara manual.' })[error.code] || 'Lokasi perangkat belum tersedia. Pilih mall secara manual.'), { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
   }
   function renderMalls() {
-    $('mallCards').innerHTML = D.MALLS.map((mall, index) => `<article class="mallCard" id="mall-${mall.id}"><div class="mallCover ${mall.id}" aria-label="Ilustrasi arsitektur, bukan foto ${escape(mall.name)}"><span class="mallTree" aria-hidden="true"></span><span class="mallCoverLabel">0${index + 1} / MEDAN</span><span class="coverDisclosure">Ilustrasi</span></div><div class="mallBody"><span class="eyebrow">FASILITAS DI DALAM MALL</span><h3>${escape(mall.name)}</h3><p class="address">${escape(mall.address)}</p><div class="mallActions"><button class="button primary" type="button" data-card-mall="${mall.id}">Saya di mall ini ${icon('arrow')}</button><button class="button secondary" type="button" data-card-toilet="${mall.id}">${icon('toilet')}Info toilet</button></div><div class="facilityGrid">${mall.facilities.map(item => `<div class="facilityItem"><span class="facilityIcon">${icon(facilityIcons[item.id])}</span><div class="facilityCopy"><strong>${escape(item.label)}</strong><span class="statusPill ${item.status}">${item.status === 'published' ? 'Tercantum resmi' : 'Belum terkonfirmasi'}</span><p>${escape(item.detail)}</p><p class="facilityLocation">${escape(facilityLocation(item))}</p><a href="${escape(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">Sumber fasilitas ↗</a></div></div>`).join('')}</div><div class="mallLinks"><a href="${escape(mall.directoryUrl)}" target="_blank" rel="noopener noreferrer">Direktori resmi ↗</a><a href="${escape(mall.phoneHref || mall.website)}"${mall.phoneHref ? '' : ' target="_blank" rel="noopener noreferrer"'}>${mall.phone ? `Telepon ${escape(mall.phone)}` : 'Situs pengelola ↗'}</a></div></div></article>`).join('');
+    $('mallCards').innerHTML = D.MALLS.map((mall, index) => `<article class="mallCard" id="mall-${mall.id}"><div class="mallCover ${mall.id}" aria-label="Ilustrasi arsitektur, bukan foto ${escape(mall.name)}"><span class="mallTree" aria-hidden="true"></span><span class="mallCoverLabel">0${index + 1} / MEDAN</span><span class="coverDisclosure">Ilustrasi</span></div><div class="mallBody"><span class="eyebrow">FASILITAS DI DALAM MALL</span><h3>${escape(mall.name)}</h3><p class="address">${escape(mall.address)}</p><div class="mallActions"><button class="button primary" type="button" data-card-mall="${mall.id}">Saya di mall ini ${icon('arrow')}</button><button class="button secondary" type="button" data-card-toilet="${mall.id}">${icon('toilet')}Info toilet</button></div><div class="facilityGrid">${mall.facilities.map(item => `<div class="facilityItem" data-facility-item="${mall.id}-${item.id}"><span class="facilityIcon">${icon(facilityIcons[item.id])}</span><div class="facilityCopy"><strong>${escape(item.label)}</strong><span class="statusPill ${item.status}">${item.status === 'published' ? 'Tercantum resmi' : 'Belum terkonfirmasi'}</span><p>${escape(item.detail)}</p><p class="facilityLocation">${escape(facilityLocation(item))}</p><a href="${escape(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">Sumber fasilitas ↗</a></div></div>`).join('')}</div><div class="mallLinks"><a href="${escape(mall.directoryUrl)}" target="_blank" rel="noopener noreferrer">Direktori resmi ↗</a><a href="${escape(mall.phoneHref || mall.website)}"${mall.phoneHref ? '' : ' target="_blank" rel="noopener noreferrer"'}>${mall.phone ? `Telepon ${escape(mall.phone)}` : 'Situs pengelola ↗'}</a></div></div></article>`).join('');
+    D.MALLS.forEach(mall => {
+      const item = mall.facilities.find(f => f.id === 'wheelchair');
+      document.querySelector(`[data-facility-item="${mall.id}-wheelchair"] .facilityCopy`).append(photos.create(item, mall));
+    });
     document.querySelectorAll('[data-card-mall]').forEach(b => b.addEventListener('click', () => { selectMall(b.dataset.cardMall); $('planner').scrollIntoView({ block: 'start' }); }));
     document.querySelectorAll('[data-card-toilet]').forEach(b => b.addEventListener('click', () => { selectMall(b.dataset.cardToilet, false); showFacility('toilet'); $('planner').scrollIntoView({ block: 'start' }); }));
   }
@@ -249,7 +258,7 @@
       const response = await fetch('/api/health', { signal: AbortSignal.timeout(4000) }); if (!response.ok) return;
       const health = await response.json(); aiEnabled = health.aiEnabled === true && health.mode === 'indoor';
       $('assistantMode').textContent = aiEnabled ? 'AI diaktifkan' : 'Asisten lokal';
-      $('chatServiceNote').textContent = aiEnabled ? 'AI membantu memahami pesan yang belum dikenali. Pesan serta posisi yang kamu ketik dikirim ke OpenAI; koordinat GPS tidak ikut dikirim oleh aplikasi.' : 'Chat dasar aktif tanpa layanan AI. Posisi berasal dari keteranganmu; informasi fasilitas mengikuti sumber resmi.';
+      $('chatServiceNote').textContent = aiEnabled ? 'AI membantu memahami pesan yang belum dikenali. Pesan serta posisi yang kamu ketik dikirim ke OpenAI; koordinat GPS tidak ikut dikirim oleh aplikasi.' : 'Rute denah latihan dihitung di perangkat tanpa API key. Foto dan informasi mall mengikuti sumber resmi.';
     } catch { /* Local indoor information remains available. */ }
   }
   $('chatForm').addEventListener('submit', event => { event.preventDefault(); sendMessage($('chatInput').value); });
@@ -260,9 +269,9 @@
   $('positionForm').addEventListener('submit', event => { event.preventDefault(); savePosition(); });
   $('floorSelect').addEventListener('change', invalidatePosition); $('originInput').addEventListener('input', invalidatePosition);
   $('locationButton').addEventListener('click', locate); $('clearLocationButton').addEventListener('click', () => { cancelChat(); clearLocation(); });
-  $('requestHelpButton').addEventListener('click', () => { cancelChat(); cancelPendingLocation(); openHelp(); });
-  $('closeHelpDialog').addEventListener('click', () => $('helpDialog').close());
-  $('clearChatButton').addEventListener('click', () => { cancelChat(); clearLocation(); context = blank(context.mallId); positionAt = null; resetJourney(); renderPosition(); $('chatLog').replaceChildren(); greeting(); $('chatInput').focus(); });
-  window.addEventListener('pagehide', () => { cancelChat(); clearLocation(); context = blank(context.mallId); positionAt = null; resetJourney(); renderPosition(); });
+  $('demoFacilityButton').addEventListener('click', () => { cancelChat(); cancelPendingLocation(); indoorNav.chooseFacility(context.facility); $('indoorNavigator').scrollIntoView({ block: 'start' }); });
+  for (const event of ['click', 'change', 'submit']) $('indoorNavigator').addEventListener(event, () => { cancelChat(); cancelPendingLocation(); });
+  $('clearChatButton').addEventListener('click', () => { cancelChat(); clearLocation(); indoorNav.clear(); context = blank(context.mallId); positionAt = null; resetJourney(); renderPosition(); $('chatLog').replaceChildren(); greeting(); $('chatInput').focus(); });
+  window.addEventListener('pagehide', () => { cancelChat(); clearLocation(); indoorNav.clear(); context = blank(context.mallId); positionAt = null; resetJourney(); renderPosition(); });
   renderMalls(); selectMall('delipark', false); greeting(); checkServices();
 })();

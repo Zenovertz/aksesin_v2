@@ -3,12 +3,14 @@ const http = require("node:http");
 const fs = require("node:fs/promises");
 const path = require("node:path");
 const Indoor = require("../public/js/indoor.js");
+const { buildMapConfig } = require("./config/cesium.cjs");
 const OPENAI_URL = "https://api.openai.com/v1/responses";
 const BODY_LIMIT = 8192;
 const MALL_IDS = ["delipark", "sun-plaza", null];
 const FACILITIES = ["toilet", "lift", "entrance", "parking", "wheelchair", null];
 const TYPES = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp", ".ico": "image/x-icon", ".woff": "font/woff", ".woff2": "font/woff2" };
-const FRONTEND = new Set(["/aksesin.html", "/css/aksesin.css", "/js/aksesin.js", "/js/indoor.js", "/js/utils.js", "/data/malls.js", "/data/floors.js"]);
+const FRONTEND = new Set(["/aksesin.html", "/css/aksesin.css", "/css/cesium-map.css", "/js/aksesin.js", "/js/indoor.js", "/js/utils.js", "/js/api/cesium-map.js", "/js/components/facility-photo.js", "/data/malls.js", "/data/floors.js"]);
+for (const file of ["/css/indoor-navigation.css", "/data/indoor/demo-plan.js", "/js/navigation/route-engine.js", "/js/navigation/indoor-navigator.js"]) FRONTEND.add(file);
 
 function publicPath(pathname) {
   return FRONTEND.has(pathname) || (/^\/assets\/[a-zA-Z0-9_./-]+$/.test(pathname)
@@ -112,6 +114,10 @@ function groundPosition(intent, input) {
 }
 function createAppServer(options = {}) {
   const rootDir = path.resolve(options.rootDir || path.join(__dirname, "../public"));
+  const mapConfig = options.mapConfig === undefined ? buildMapConfig(process.env) : buildMapConfig({
+    CESIUM_ION_ACCESS_TOKEN: options.mapConfig?.ionAccessToken,
+    CESIUM_ENABLE_3D: options.mapConfig?.enable3d === true ? "true" : "false"
+  });
   const fetchImpl = options.fetchImpl || globalThis.fetch;
   const apiKey = String(options.apiKey ?? process.env.OPENAI_API_KEY ?? "").trim();
   const configuredModel = options.model ?? process.env.OPENAI_MODEL ?? "gpt-4.1-mini";
@@ -210,6 +216,7 @@ function createAppServer(options = {}) {
       }
       if (!["GET", "HEAD"].includes(req.method)) throw new ApiError(405, "METHOD_NOT_ALLOWED", "Metode permintaan tidak didukung.");
       if (url.pathname === "/api/health") { json(res, 200, { aiEnabled: Boolean(apiKey), mode: "indoor", indoorPositioning: false }); return; }
+      if (url.pathname === "/api/config/maps") { json(res, 200, mapConfig); return; }
       let pathname;
       try { pathname = decodeURIComponent(url.pathname); } catch { throw new ApiError(400, "INVALID_PATH", "Alamat halaman tidak valid."); }
       if (pathname === "/") pathname = "/aksesin.html";

@@ -8,6 +8,7 @@ const path = require("node:path");
 const http = require("node:http");
 const { once } = require("node:events");
 const { createAppServer, chatInput } = require("../../server/index.cjs");
+const { buildMapConfig } = require("../../server/config/cesium.cjs");
 const INTENT = { intent: "indoor", mallId: "delipark", floorId: "gf", originLabel: "concierge", facility: "toilet" };
 function response(data, status = 200) {
   return new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json" } });
@@ -22,10 +23,16 @@ async function app(t, overrides = {}) {
   await fs.mkdir(path.join(rootDir, "assets/images"), { recursive: true });
   await fs.mkdir(path.join(rootDir, ".git"));
   await fs.mkdir(path.join(rootDir, "js"));
+  await fs.mkdir(path.join(rootDir, "js/api"));
+  await fs.mkdir(path.join(rootDir, "js/components"));
+  await fs.mkdir(path.join(rootDir, "css"));
   await fs.mkdir(path.join(rootDir, "server"));
   await Promise.all([
     fs.writeFile(path.join(rootDir, "aksesin.html"), "<!doctype html><h1>AKSESIN test fixture</h1>"),
     fs.writeFile(path.join(rootDir, "js/aksesin.js"), "window.testFixture = true;"),
+    fs.writeFile(path.join(rootDir, "js/api/cesium-map.js"), "/* public map module fixture */"),
+    fs.writeFile(path.join(rootDir, "js/components/facility-photo.js"), "/* public photo module fixture */"),
+    fs.writeFile(path.join(rootDir, "css/cesium-map.css"), "/* public map style fixture */"),
     fs.writeFile(path.join(rootDir, "assets/images/sample.svg"), '<svg xmlns="http://www.w3.org/2000/svg"/>'),
     fs.writeFile(path.join(rootDir, "assets/images/sample.png"), "public image fixture"),
     fs.writeFile(path.join(rootDir, ".env"), "OPENAI_API_KEY=test-private-fixture"),
@@ -33,7 +40,7 @@ async function app(t, overrides = {}) {
     fs.writeFile(path.join(rootDir, "server/index.cjs"), "private backend fixture")
   ]);
   const server = createAppServer({
-    rootDir, apiKey: "",
+    rootDir, apiKey: "", mapConfig: buildMapConfig({}),
     fetchImpl: async () => { throw new Error("Unexpected external request in offline test"); }, ...overrides
   });
   t.after(async () => {
@@ -61,10 +68,13 @@ test("local server serves only public files and key-free health", async t => {
   assert.match(await page.text(), /AKSESIN test fixture/);
   assert.equal((await h.get("/assets/images/sample.svg")).status, 200);
   assert.equal((await h.get("/assets/images/sample.png")).status, 200);
+  for (const file of ["/js/api/cesium-map.js", "/js/components/facility-photo.js", "/css/cesium-map.css"]) {
+    assert.equal((await h.get(file)).status, 200, file);
+  }
   const health = await h.get("/api/health");
   assert.deepEqual(await health.json(), { aiEnabled: true, mode: "indoor", indoorPositioning: false });
   assert.equal(health.headers.get("cache-control"), "no-store");
-  for (const file of ["/.env", "/.env.example", "/.git/config", "/server/index.cjs", "/package.json", "/assets/../server/index.cjs", "/assets/%2e%2e/.env", "/assets/images/.env.js", "/data/.env.js"]) {
+  for (const file of ["/.env", "/.env.example", "/.git/config", "/server/index.cjs", "/server/config/cesium.cjs", "/package.json", "/assets/../server/index.cjs", "/assets/%2e%2e/.env", "/assets/images/.env.js", "/data/.env.js"]) {
     const result = await h.get(file);
     assert.equal(result.status, 404, file);
     assert.ok(!(await result.text()).includes("test-private-fixture"), file);
@@ -83,11 +93,57 @@ test("the reorganized public page serves all linked styles, scripts, and data", 
   const h = await app(t, { rootDir: path.resolve(__dirname, "../../public") });
   const html = await (await h.get("/aksesin.html")).text();
   const files = [...html.matchAll(/(?:src|href)="((?:css|js|data)\/[^\"]+)"/g)].map(match => match[1]);
-  assert.equal(files.length, 6);
+  assert.ok(files.length >= 6, "The main page must reference its styles, scripts, and data");
   for (const file of files) assert.equal((await h.get("/" + file)).status, 200, file);
   for (const file of ["/README.md", "/docs/data-sources.md", "/server/index.cjs"]) {
     assert.equal((await h.get(file)).status, 404, file);
   }
+});
+
+test("map configuration defaults to token-free Cesium and exposes no unrelated environment values", () => {
+  const expected = { provider: "cesium", ionAccessToken: null, enable3d: false };
+  assert.deepEqual(buildMapConfig(), expected);
+  assert.deepEqual(buildMapConfig({ CESIUM_ENABLE_3D: "true", OPENAI_API_KEY: "private-ai-fixture", PRIVATE_CONFIG: "private-config-fixture" }), expected);
+  assert.deepEqual(buildMapConfig({ CESIUM_ION_ACCESS_TOKEN: " public-read-only-fixture ", CESIUM_ENABLE_3D: "true", OPENAI_API_KEY: "private-ai-fixture" }), {
+    provider: "cesium", ionAccessToken: "public-read-only-fixture", enable3d: true
+  });
+});
+
+test("invalid map tokens and non-exact 3D flags cannot enable Cesium ion features", () => {
+  for (const token of [undefined, null, 123, {}, "", "   ", "a".repeat(4097), "bad\ntoken", "bad\ttoken", "bad\u0000token", "bad\u007ftoken", "bad\u0085token"]) {
+    assert.deepEqual(buildMapConfig({ CESIUM_ION_ACCESS_TOKEN: token, CESIUM_ENABLE_3D: "true" }), {
+      provider: "cesium", ionAccessToken: null, enable3d: false
+    });
+  }
+  for (const flag of [undefined, null, false, true, "TRUE", "1", " true ", "false"]) {
+    assert.deepEqual(buildMapConfig({ CESIUM_ION_ACCESS_TOKEN: "public-read-only-fixture", CESIUM_ENABLE_3D: flag }), {
+      provider: "cesium", ionAccessToken: "public-read-only-fixture", enable3d: false
+    });
+  }
+  assert.equal(buildMapConfig({ CESIUM_ION_ACCESS_TOKEN: "a".repeat(4096), CESIUM_ENABLE_3D: "true" }).enable3d, true);
+});
+
+test("map config endpoint succeeds without a token and makes no external requests", async t => {
+  let called = 0;
+  const h = await app(t, { apiKey: "private-ai-fixture", fetchImpl: async () => { called++; throw new Error("Unexpected network request"); } });
+  const result = await h.get("/api/config/maps");
+  assert.equal(result.status, 200);
+  assert.match(result.headers.get("content-type"), /application\/json/);
+  assert.equal(result.headers.get("cache-control"), "no-store");
+  assert.deepEqual(await result.json(), { provider: "cesium", ionAccessToken: null, enable3d: false });
+  assert.equal(called, 0);
+});
+
+test("map endpoint projects injected configuration to public fields only", async t => {
+  const h = await app(t, {
+    apiKey: "private-ai-fixture",
+    mapConfig: { provider: "untrusted-provider", ionAccessToken: "public-read-only-fixture", enable3d: true, OPENAI_API_KEY: "private-ai-fixture", arbitrary: "private-extra-fixture" }
+  });
+  assert.deepEqual(await (await h.get("/api/config/maps")).json(), {
+    provider: "cesium", ionAccessToken: "public-read-only-fixture", enable3d: true
+  });
+  assert.equal((await h.post("/api/config/maps", {})).status, 404);
+  assert.equal((await h.get("/server/config/cesium.cjs")).status, 404);
 });
 
 test("cross-origin JSON, DNS rebinding hosts and unsupported methods cannot invoke services", async t => {

@@ -1,0 +1,303 @@
+/* Optional area map and sourced facility photos share the indoor planner palette. */
+.cesiumSection {
+  min-width: 0;
+  margin: 22px 23px 0;
+  padding: 18px;
+  border: 1px solid #d9e4d1;
+  border-radius: 12px;
+  background: #f7faf3;
+  color: var(--ink, #233b31);
+}
+
+.cesiumSection [hidden],
+.facilityPhoto[hidden],
+.photoDialog[hidden] { display: none !important; }
+
+.cesiumHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px 14px;
+}
+
+.cesiumHeading > div { min-width: 0; }
+.cesiumHeading h3 {
+  color: #31543a;
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -.25px;
+  line-height: 1.45;
+}
+
+.cesiumHeading p {
+  max-width: 56ch;
+  margin-top: 5px;
+  color: #607354;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+#loadCesiumMap,
+.cesiumToolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 44px;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 10px 13px;
+  border: 1px solid #bccfb3;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--green, #1d7052);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+#loadCesiumMap { margin-top: 13px; }
+.cesiumHeading > #loadCesiumMap { margin-top: 0; }
+#loadCesiumMap:hover,
+.cesiumToolbar button:hover { border-color: #9db88f; background: #edf5e6; }
+#loadCesiumMap:disabled,
+.cesiumToolbar button:disabled { cursor: not-allowed; opacity: .6; }
+.cesiumToolbar .icon { width: 17px; height: 17px; }
+
+.cesiumViewport {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  height: 300px;
+  margin-top: 15px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid #cddbc5;
+  border-radius: 10px;
+  background: #e9efe2;
+}
+
+.cesiumViewport .cesium-viewer,
+.cesiumViewport .cesium-widget { width: 100%; height: 100%; }
+.cesiumViewport canvas { display: block; max-width: 100%; }
+.cesiumViewport:focus-visible { outline: 3px solid #267c5b; outline-offset: 3px; }
+.cesiumViewport .cesium-viewer-toolbar { top: 7px; right: 7px; }
+.cesiumViewport .cesium-toolbar-button { min-width: 44px; min-height: 44px; }
+
+#cesiumMapStatus {
+  margin-top: 10px;
+  color: #4e6945;
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+#cesiumMapStatus:empty { display: none; }
+#cesiumMapStatus.error,
+#cesiumMapStatus[data-state="error"] { color: #855128; }
+.cesiumToolbar { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+.cesiumNote {
+  margin-top: 11px;
+  color: #687a5d;
+  font-size: 11px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.facilityPhoto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 13px;
+  padding: 11px;
+  border: 1px solid #dce5d4;
+  border-radius: 9px;
+  background: #f7faf2;
+}
+
+.facilityPhotoButton {
+  position: relative;
+  display: block;
+  flex: 0 0 96px;
+  width: 96px;
+  min-width: 44px;
+  max-width: 100%;
+  min-height: 72px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #bdceb3;
+  border-radius: 7px;
+  background: #e7efdf;
+  color: var(--green, #1d7052);
+  cursor: zoom-in;
+  touch-action: manipulation;
+}
+
+.facilityPhotoButton:hover { border-color: #548551; box-shadow: 0 0 0 2px #dfecd8; }
+.facilityPhotoImage {
+  display: block;
+  width: 96px;
+  max-width: 100%;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #e7efdf;
+}
+
+.facilityPhotoButton .facilityPhotoImage { width: 100%; border-radius: 0; }
+.facilityPhotoCopy { flex: 1 1 100px; min-width: 0; overflow-wrap: anywhere; }
+.facilityPhotoCopy strong {
+  display: block;
+  color: #405e35;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.55;
+}
+
+.facilityPhotoCopy p { margin: 4px 0 0; color: #64765a; font-size: 11px; line-height: 1.75; }
+.facilityPhotoCopy a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  max-width: 100%;
+  color: var(--green, #1d7052);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.6;
+  text-underline-offset: 3px;
+}
+
+.facilityPhotoPlaceholder {
+  display: flex;
+  flex: 0 0 96px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 96px;
+  max-width: 100%;
+  min-height: 72px;
+  padding: 9px;
+  border: 1px dashed #bdcdb1;
+  border-radius: 7px;
+  background: #eef4e7;
+  color: #5c7350;
+  font-size: 10px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.facilityPhotoPlaceholder .icon { width: 20px; height: 20px; }
+.facilityPhotoBadge {
+  display: inline-flex;
+  max-width: 100%;
+  margin-top: 5px;
+  padding: 2px 6px;
+  border: 1px solid #d4e1c8;
+  border-radius: 4px;
+  background: #edf4e5;
+  color: #506e41;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.photoDialog {
+  position: fixed;
+  width: min(820px, calc(100% - 36px));
+  max-width: calc(100% - 36px);
+  max-height: calc(100dvh - 36px);
+  margin: auto;
+  padding: 65px 22px 20px;
+  overflow: auto;
+  border: 1px solid #bfd2b7;
+  border-radius: 16px;
+  background: #fbfdf8;
+  color: var(--ink, #233b31);
+  box-shadow: 0 18px 65px #17352140;
+}
+
+.photoDialog::backdrop { background: #172b208c; backdrop-filter: blur(3px); }
+.photoDialog > button {
+  position: absolute;
+  top: 11px;
+  right: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 9px 13px;
+  border: 1px solid #ccdbc3;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--green, #1d7052);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.photoDialog > button:hover { background: #edf5e6; }
+.photoDialog > button .icon { width: 18px; height: 18px; }
+#facilityPhotoLarge {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: calc(100dvh - 235px);
+  object-fit: contain;
+  border-radius: 9px;
+  background: #eef3e8;
+}
+
+#facilityPhotoCaption { margin-top: 15px; color: #445e3a; font-size: 14px; line-height: 1.75; overflow-wrap: anywhere; }
+#facilityPhotoSource { display: inline-flex; align-items: center; min-height: 44px; max-width: 100%; margin-top: 3px; color: var(--green, #1d7052); font-size: 12px; font-weight: 600; overflow-wrap: anywhere; }
+.cesiumSection button:focus-visible,
+.facilityPhotoButton:focus-visible,
+.photoDialog button:focus-visible,
+.photoDialog a:focus-visible { outline: 3px solid #267c5b; outline-offset: 4px; }
+
+@media (max-width: 1200px) {
+  .cesiumSection { margin-left: 19px; margin-right: 19px; }
+}
+
+@media (max-width: 680px) {
+  .cesiumViewport { height: 240px; }
+  .cesiumSection { padding: 16px; }
+  .photoDialog { width: calc(100% - 28px); max-width: calc(100% - 28px); max-height: calc(100dvh - 28px); padding: 63px 17px 16px; }
+  #facilityPhotoLarge { max-height: calc(100dvh - 225px); }
+}
+
+@media (max-width: 420px) {
+  .cesiumSection { margin: 18px 15px 0; padding: 14px 12px; }
+  .cesiumHeading h3 { font-size: 15px; }
+  .cesiumToolbar { gap: 8px; }
+  .cesiumToolbar button { flex: 1 1 100%; }
+  .cesiumViewport { margin-top: 13px; }
+  .facilityPhoto { padding: 9px; gap: 9px; }
+  .photoDialog { width: calc(100% - 24px); max-width: calc(100% - 24px); border-radius: 13px; }
+  #facilityPhotoCaption { font-size: 13px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cesiumSection *, .facilityPhoto *, .photoDialog * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}
+
+@media (forced-colors: active) {
+  .cesiumSection, .cesiumViewport, .facilityPhoto, .facilityPhotoButton,
+  .facilityPhotoPlaceholder, .facilityPhotoBadge, .photoDialog { border-color: CanvasText; }
+  .cesiumSection button, .photoDialog > button { border-color: ButtonText; }
+  .facilityPhotoButton:focus-visible { outline-color: Highlight; }
+}
